@@ -11,14 +11,16 @@ st.set_page_config(page_title="AI 뉴스 검색기", page_icon="📰", layout="w
 st.title("📰 AI 최신 뉴스 검색 & 자동 저장기")
 
 # ── 시크릿 로드 및 클라이언트 초기화 ──────────────────────────────
-@st.cache_resource
 def init_clients():
     gemini = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     supa   = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
     return gemini, supa
 
-gemini_client, supabase = init_clients()
-
+try:
+    gemini_client, supabase = init_clients()
+except Exception as e:
+    st.error(f"⛔ 초기화 실패: {e}")
+    st.stop()
 # ── 탭 구성 ───────────────────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["🔍 검색하기", "💾 저장된 뉴스 보기", "📊 통계 분석"])
 
